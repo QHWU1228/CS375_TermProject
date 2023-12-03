@@ -213,13 +213,31 @@ void schedule_bus_return(vector<Bus>bus_schedule, Student student, vector<Bus> &
     }
 }
 
+// next step: probably create a planner for each student in the students vector
 int main(int argc, char *argv[])
 {
     vector <Class> course ;
-    course.push_back(Class(10.0, 11.30, 3, "Physic 131"));
-    course.push_back(Class(8.30, 9.30, 5, "Computer Science 375"));
-    course.push_back(Class(13.0, 14.30, 2, "Math 226"));
-    course.push_back(Class(15.0, 17.30, 5, "Bio Lab"));
+    // having 10 courses now 
+    Class physics = Class(10.0, 11.30, 3, "Physic 131");
+    course.push_back(physics);
+    Class cs = Class(8.30, 9.30, 5, "Computer Science 375");
+    course.push_back(cs);
+    Class cal2 = Class(13.0, 14.30, 2, "Math 226");
+    course.push_back(cal2);
+    Class biolab = Class(15.0, 17.30, 5, "Bio Lab");
+    course.push_back(biolab);
+    Class chem = Class(15.0, 16.30, 6, "Chemistry");
+    course.push_back(chem);
+    Class number_system = Class(9.30, 11.10, 3, "Number System");
+    course.push_back(biolab);
+    Class cal3 = Class(14.0, 15.30, 7, "Math 323");
+    course.push_back(cal3);
+    Class film = Class(12.0, 14.0, 8, "Introduction to Film");
+    course.push_back(film);
+    Class geo = Class(10.0, 11.00, 3, "Intro to Geography");
+    course.push_back(geo);
+    Class astronomy = Class(15.0, 17.30, 9, "Intro to Astronomy");
+    course.push_back(astronomy);
 
     //---------------------------------------------------------
     vector <Bus> bus1 ; // Express
@@ -246,10 +264,23 @@ int main(int argc, char *argv[])
     bus3.push_back(Bus(17.50, 18.40, 19.00, 1)); 
     bus3.push_back(Bus(18.50, 19.40, 20.00, 1)); 
     //---------------------------------------------------------
-    Vector<Student> students ; 
-    students.push_back(Student({}, "John", 12.0, 13.0, 15.0, 18.0, 15);)
-    students.push_back(Student({}, "Kevin", 8.0, 12.0, 14.0, 15.0, 8);)
-    students.push_back(Student({}, "Tony", 0.0, 0.0, 18.0, 20.0, 12);)
+    vector<Student> students; 
+    // total of 15 students now
+    // CourseSchedule, break_time_start, break_time_end, bus_start, bus_return, credits
+    students.push_back(Student({}, "John", 12.0, 13.0, 15.0, 18.0, 15));
+    students.push_back(Student({}, "Kevin", 8.0, 12.0, 14.0, 15.0, 8));
+    students.push_back(Student({}, "Tony", 13.3, 15.4, 18.0, 20.0, 12));
+    students.push_back(Student({}, "David", 17.0, 20.0, 13.0, 14.0, 20));
+    students.push_back(Student({}, "James", 16.0, 18.0, 14.0, 14.4, 16));
+    students.push_back(Student({}, "Noah", 12.0, 12.50, 13.0, 14.35, 18));
+    students.push_back(Student({}, "Jack", 13.3, 15.0, 17.0, 18.5, 19));
+    students.push_back(Student({}, "Jacob", 14.0, 15.5, 14.0, 16.0, 10));
+    students.push_back(Student({}, "Henry", 12.0, 13.3, 18.0, 19.5, 22));
+    students.push_back(Student({}, "Sophia", 10.0, 12.5, 16.0, 17.3, 14));
+    students.push_back(Student({}, "Aria", 14.0, 16.0, 12.45, 13.30, 12));
+    students.push_back(Student({}, "Lily", 15.0, 16.3, 13.33, 14.22, 24));
+    students.push_back(Student({}, "Charles", 15.0, 17.0, 15.3, 15.5, 28));
+    students.push_back(Student({}, "Mike", 14.0, 16.5, 19.3, 20.0, 10));
     //---------------------------------------------------------
     
 }

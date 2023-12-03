@@ -53,7 +53,8 @@ struct Bus
     double start_time;
     double return_time;
     double stop_time;
-    int cost;
+    double cost;
+
      Bus &operator=(const Bus &other)
     {
         if (this == &other)
@@ -140,7 +141,7 @@ double minConvert(double time)
     return int(time) * 60 + (time - int(time)) * 100 ; 
 }
 
-double costPerMin(double StartTime, double EndTime, double cost)
+double costPerMinute(double StartTime, double EndTime, double cost)
 {
     // Convert the time to minutes 
     double startMinutes = minConvert(StartTime);
@@ -150,14 +151,14 @@ double costPerMin(double StartTime, double EndTime, double cost)
     return costperMin = cost/(endMinutes - startMinutes); 
 }
 
-Bus optimal_bus(vector<Bus>bus_schedule)
+Bus optimal_bus_start(vector<Bus>bus_schedule)
 {
     Bus optimialBus = bus_schedule[0]; 
-    double minCostPerMinute = costPerMinute(bus_schedule[0].start_time, bus_schedule[0].return_time, bus_schedule[0].cost);
+    double minCostPerMinute = costPerMinute(bus_schedule[0].start_time, bus_schedule[0].stop_time, bus_schedule[0].cost);
 
     for(long unsigned int i = 0; i < bus_schedule.size(); i++ )
     {
-        double currentCostPerMinute = costPerMinute(bus_schedule[i].start_time, bus_schedule[i].return_time, bus_schedule[i].cost);
+        double currentCostPerMinute = costPerMinute(bus_schedule[i].start_time, bus_schedule[i].stop_time, bus_schedule[i].cost);
 
         if(currentCostPerMinute < minCostPerMinute)
         {
@@ -169,7 +170,26 @@ Bus optimal_bus(vector<Bus>bus_schedule)
     return optimialBus;
 }
 
-void schedule_bus(vector<Bus>bus_schedule, Student student, vector<Bus> &qualifyBus)
+Bus optimal_bus_return(vector<Bus>bus_schedule)
+{
+    Bus optimialBus = bus_schedule[0]; 
+    double minCostPerMinute = costPerMinute(bus_schedule[0].stop_time, bus_schedule[0].return_time, bus_schedule[0].cost);
+
+    for(long unsigned int i = 0; i < bus_schedule.size(); i++ )
+    {
+        double currentCostPerMinute = costPerMinute(bus_schedule[i].stop_time, bus_schedule[i].return_time, bus_schedule[i].cost);
+
+        if(currentCostPerMinute < minCostPerMinute)
+        {
+            minCostPerMinute = currentCostPerMinute;
+            optimialBus = bus_schedule[i]; 
+        }
+    }
+
+    return optimialBus;
+}
+
+void schedule_bus_start(vector<Bus>bus_schedule, Student student, vector<Bus> &qualifyBus)
 {   
     for(long unsigned int i = 0; i < bus_schedule.size(); i++ )
     {
@@ -181,7 +201,55 @@ void schedule_bus(vector<Bus>bus_schedule, Student student, vector<Bus> &qualify
     }
 }
 
+void schedule_bus_return(vector<Bus>bus_schedule, Student student, vector<Bus> &qualifyBus)
+{   
+    for(long unsigned int i = 0; i < bus_schedule.size(); i++ )
+    {
+        if(minConvert(bus_schedule[i].return_time) > minConvert(student.bus_return))
+        {
+            qualifyBus.push_back(bus_schedule[i]) ;
+            break;
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
+    vector <Class> course ;
+    course.push_back(Class(10.0, 11.30, 3, "Physic 131"));
+    course.push_back(Class(8.30, 9.30, 5, "Computer Science 375"));
+    course.push_back(Class(13.0, 14.30, 2, "Math 226"));
+    course.push_back(Class(15.0, 17.30, 5, "Bio Lab"));
 
+    //---------------------------------------------------------
+    vector <Bus> bus1 ; // Express
+    bus1.push_back(Bus(15.15, 15.30, 15.40, 4)); 
+    bus1.push_back(Bus(16.15, 16.30, 16.40, 4));  
+    bus1.push_back(Bus(17.15, 17.30, 17.40, 4)); 
+    bus1.push_back(Bus(18.15, 18.30, 18.40, 4)); 
+    bus1.push_back(Bus(19.15, 19.30, 19.40, 4)); 
+    bus1.push_back(Bus(20.15, 20.30, 20.40, 4)); 
+
+    vector <Bus> bus2 ; // Normal
+    bus2.push_back(Bus(15.05, 15.40, 15.50, 2)); 
+    bus2.push_back(Bus(16.05, 16.40, 16.50, 2));  
+    bus2.push_back(Bus(17.05, 17.40, 17.50, 2)); 
+    bus2.push_back(Bus(18.05, 18.40, 18.50, 2)); 
+    bus2.push_back(Bus(19.05, 19.40, 19.50, 2)); 
+    bus2.push_back(Bus(20.05, 20.40, 20.50, 2)); 
+
+    vector <Bus> bus3 ; // Local
+    bus3.push_back(Bus(13.50, 14.40, 15.00, 1)); 
+    bus3.push_back(Bus(14.50, 15.40, 16.00, 1));  
+    bus3.push_back(Bus(15.50, 16.40, 17.00, 1)); 
+    bus3.push_back(Bus(16.50, 17.40, 18.00, 1)); 
+    bus3.push_back(Bus(17.50, 18.40, 19.00, 1)); 
+    bus3.push_back(Bus(18.50, 19.40, 20.00, 1)); 
+    //---------------------------------------------------------
+    Vector<Student> students ; 
+    students.push_back(Student({}, "John", 12.0, 13.0, 15.0, 18.0, 15);)
+    students.push_back(Student({}, "Kevin", 8.0, 12.0, 14.0, 15.0, 8);)
+    students.push_back(Student({}, "Tony", 0.0, 0.0, 18.0, 20.0, 12);)
+    //---------------------------------------------------------
+    
 }

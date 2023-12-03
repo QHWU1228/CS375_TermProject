@@ -116,7 +116,7 @@ void joining_courses(vector<Class>&courses, Student& student)
     // so we are basically determining whether a student can take the courses listed in their current schedule 
     vector<Class> schedule;
     vector<Class> planner = student.CourseSchedule;
-    for(long unsigned int i =0; i <planner.size(); i++)
+    for(long unsigned int i = 0; i <planner.size(); i++)
     {
        int course_index = finding_courses(courses,planner[i].course_name);
        if (course_index != -1)
@@ -134,9 +134,51 @@ void joining_courses(vector<Class>&courses, Student& student)
     // turn the planner into actual schedule without time conflict
     student.CourseSchedule = schedule;
 }
-void schedule_bus(vector<Bus>bus_schedule)
+
+double minConvert(double time)
 {
-    // probably just write a for loop to finish everything
+    return int(time) * 60 + (time - int(time)) * 100 ; 
+}
+
+double costPerMin(double StartTime, double EndTime, double cost)
+{
+    // Convert the time to minutes 
+    double startMinutes = minConvert(StartTime);
+    double endMinutes = minConvert(EndTime);
+
+    double costperMin = 0 ; 
+    return costperMin = cost/(endMinutes - startMinutes); 
+}
+
+Bus optimal_bus(vector<Bus>bus_schedule)
+{
+    Bus optimialBus = bus_schedule[0]; 
+    double minCostPerMinute = costPerMinute(bus_schedule[0].start_time, bus_schedule[0].return_time, bus_schedule[0].cost);
+
+    for(long unsigned int i = 0; i < bus_schedule.size(); i++ )
+    {
+        double currentCostPerMinute = costPerMinute(bus_schedule[i].start_time, bus_schedule[i].return_time, bus_schedule[i].cost);
+
+        if(currentCostPerMinute < minCostPerMinute)
+        {
+            minCostPerMinute = currentCostPerMinute;
+            optimialBus = bus_schedule[i]; 
+        }
+    }
+
+    return optimialBus;
+}
+
+void schedule_bus(vector<Bus>bus_schedule, Student student, vector<Bus> &qualifyBus)
+{   
+    for(long unsigned int i = 0; i < bus_schedule.size(); i++ )
+    {
+        if(minConvert(bus_schedule[i].start_time) > minConvert(student.bus_start))
+        {
+            qualifyBus.push_back(bus_schedule[i]) ;
+            break;
+        }
+    }
 }
 
 int main(int argc, char *argv[])

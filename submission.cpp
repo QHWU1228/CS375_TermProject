@@ -283,5 +283,11 @@ int main(int argc, char *argv[])
     students.push_back(Student({cs, geo, chem, cal3, literature}, "Charles", 15.0, 17.0, 15.3, 15.5, 28));
     students.push_back(Student({film, number_system, physics,biolab,geo}, "Mike", 14.0, 16.5, 19.3, 20.0, 10));
     //---------------------------------------------------------
-    
+    sort(students.begin(),students.end(),sortOnCredits);
+    vector<Bus> qualifyBus;
+    for(long unsigned int i = 0; i < students.size();i++)
+    {
+         joining_courses(course, students[i]);
+    }
+   
 }

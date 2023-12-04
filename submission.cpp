@@ -51,8 +51,8 @@ struct Student
 struct Bus
 {
     double start_time;
-    double return_time;
     double stop_time;
+    double return_time;
     double cost;
 
      Bus &operator=(const Bus &other)
@@ -60,15 +60,15 @@ struct Bus
         if (this == &other)
             return *this;
         this->start_time = other.start_time;
-        this->return_time = other.return_time;
         this->stop_time = other.stop_time;
+        this->return_time = other.return_time;
         this->cost = other.cost;
         return *this;
     }
-    Bus() : start_time(0.0),return_time(0.0), stop_time(0.0), cost(0) {}
-    Bus(double start, double r, double stop, int ride_cost) : start_time(start), return_time(r), 
-    stop_time(stop), cost(ride_cost) {}
-    Bus(const Bus &other): start_time(other.start_time),return_time(other.return_time),stop_time(other.stop_time),
+    Bus() : start_time(0.0),stop_time(0.0), return_time(0.0), cost(0) {}
+    Bus(double start, double stop, double r, int ride_cost) : start_time(start), stop_time(stop), 
+    return_time(r), cost(ride_cost) {}
+    Bus(const Bus &other): start_time(other.start_time),stop_time(other.stop_time),return_time(other.return_time),
     cost(other.cost) {}
 };
 
@@ -284,10 +284,39 @@ int main(int argc, char *argv[])
     students.push_back(Student({film, number_system, physics,biolab,geo}, "Mike", 14.0, 16.5, 19.3, 20.0, 10));
     //---------------------------------------------------------
     sort(students.begin(),students.end(),sortOnCredits);
-    vector<Bus> qualifyBus;
+    //vector<Bus> qualifyBus;
     for(long unsigned int i = 0; i < students.size();i++)
     {
          joining_courses(course, students[i]);
     }
-   
+    
+    for(auto student: students)
+    {
+        vector<Bus> qualifyBus_start;
+        vector<Bus> qualifyBus_return;
+
+        schedule_bus_start(bus1, student, qualifyBus_start); 
+        schedule_bus_start(bus2, student, qualifyBus_start); 
+        schedule_bus_start(bus3, student, qualifyBus_start); 
+
+        schedule_bus_return(bus1, student, qualifyBus_return);
+        schedule_bus_return(bus2, student, qualifyBus_return);
+        schedule_bus_return(bus3, student, qualifyBus_return);
+
+        Bus optimalBusStart = optimal_bus_start(qualifyBus_start);
+        Bus optimalBusReturn = optimal_bus_return(qualifyBus_return);
+
+        cout << "Student: " << student.student_name << endl;
+        for (const auto courses : student.CourseSchedule) 
+        {
+            cout<< "Class: " << courses.course_name 
+                << ", " << courses.start_time 
+                << " - " << courses.end_time << endl;
+        }
+
+        cout << endl;
+        cout << "Optimal Start Bus: Start Time - " << optimalBusStart.start_time << ", Stop Time - " << optimalBusStart.stop_time << ", Cost - " << optimalBusStart.cost << endl;
+        cout << "Optimal Return Bus: Stop Time - " << optimalBusReturn.stop_time << ", Return Time - " << optimalBusReturn.return_time << ", Cost - " << optimalBusReturn.cost << endl;
+        cout << "---------------------" << endl;
+    }
 }

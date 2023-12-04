@@ -155,7 +155,7 @@ void joining_courses(vector<Class> &courses, Student &student)
                 {
                     if (planner[i].end_time < student.break_time_start || planner[i].start_time > student.break_time_end)
                     {
-                        if (planner[i].end_time < student.bus_start)
+                        if (planner[i].end_time < student.bus_start || planner[i].start_time > student.bus_return)
                         {
                             schedule.push_back(planner[i]);
                         }

@@ -371,7 +371,7 @@ int main()
                  << " - " << courses.end_time << endl;
         }
         cout << endl;
-        cout << "Optimal Start Bus: Start Time - " << result.optimal_bus_start.start_time << ", Stop Time - " << result.optimal_bus_start.return_time << ", Cost - " << result.optimal_bus_start.cost << endl;
+        cout << "Optimal Start Bus: Start Time - " << result.optimal_bus_start.start_time << ", Stop Time - " << result.optimal_bus_start.stop_time << ", Cost - " << result.optimal_bus_start.cost << endl;
         cout << "Optimal Return Bus: Stop Time - " << result.optimal_bus_return.stop_time << ", Return Time - " << result.optimal_bus_return.return_time << ", Cost - " << result.optimal_bus_return.cost << endl;
         cout << "---------------------" << endl;
     }

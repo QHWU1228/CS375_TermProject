@@ -128,6 +128,11 @@ bool sortOnCredits(Student a, Student b)
     return a.credits > b.credits;
 }
 
+bool sortOncost(Bus a, Bus b)
+{
+    return a.cost < b.cost;
+}
+
 bool sortOnStartTimes(Class a, Class b)
 {
     return a.start_time < b.start_time;
@@ -185,6 +190,33 @@ double costPerMinute(double StartTime, double EndTime, double cost)
     return costperMin = cost / (endMinutes - startMinutes);
 }
 
+double TotalCost(Bus a, Bus b)
+{
+    return a.cost + b.cost ; 
+}
+
+void optimal_bus(vector<Bus> bus_start, vector<Bus> bus_return, Bus &optimalBusStart, Bus &optimalBusRetun)
+{
+    double bestCost = 999 ; 
+    for (long unsigned int i = 0; i < bus_start.size(); i++)
+    {
+        for (long unsigned int j = 0; j < bus_return.size(); j++)
+        {
+            if(minConvert(bus_start[i].stop_time) < minConvert(bus_return[j].stop_time))
+            {
+                double currentcost = TotalCost(bus_start[i], bus_return[j]); 
+                if (currentcost < bestCost)
+                {
+                    bestCost = currentcost;
+                    optimalBusStart = bus_start[i];
+                    optimalBusRetun = bus_return[j];
+                }
+            }
+        }
+    }
+}
+
+/*
 Bus optimal_bus_start(vector<Bus> bus_schedule)
 {
     Bus optimialBus = bus_schedule[0];
@@ -212,21 +244,23 @@ Bus optimal_bus_return(vector<Bus> bus_schedule, Bus Start)
     for (long unsigned int i = 0; i < bus_schedule.size(); i++)
     {
         double currentCostPerMinute = costPerMinute(bus_schedule[i].stop_time, bus_schedule[i].return_time, bus_schedule[i].cost);
-
+        //cout << bus_schedule[i].stop_time << endl ; 
         if ((currentCostPerMinute < minCostPerMinute) && (Start.stop_time < bus_schedule[i].stop_time))
         {
             minCostPerMinute = currentCostPerMinute;
+            //cout << bus_schedule[i].stop_time << endl ;
+
             optimialBus = bus_schedule[i];
         }
     }
 
     return optimialBus;
-}
+}*/
 
 void schedule_bus_start(vector<Bus> bus_schedule, Student student, vector<Bus> &qualifyBus)
 {
     for (long unsigned int i = 0; i < bus_schedule.size(); i++)
-    {
+    {   
         if (minConvert(bus_schedule[i].start_time) > minConvert(student.bus_start))
         {
             qualifyBus.push_back(bus_schedule[i]);
@@ -235,14 +269,18 @@ void schedule_bus_start(vector<Bus> bus_schedule, Student student, vector<Bus> &
     }
 }
 
-void schedule_bus_return(vector<Bus> bus_schedule, Student student, vector<Bus> &qualifyBus)
+void schedule_bus_return(vector<Bus> bus_schedule, Student student, vector<Bus> &qualifyBusReturn, vector<Bus> &qualifyBusStart)
 {
-    for (long unsigned int i = 0; i < bus_schedule.size(); i++)
+    for (long unsigned int i = 0; i < qualifyBusStart.size(); i++)
     {
-        if (minConvert(bus_schedule[i].return_time) > minConvert(student.bus_return))
+        for(long unsigned int j = 0; j < bus_schedule.size(); j++)
         {
-            qualifyBus.push_back(bus_schedule[i]);
-            break;
+            if ((minConvert(bus_schedule[j].return_time) <= minConvert(student.bus_return)) &&
+                (minConvert(bus_schedule[j].stop_time) > minConvert(qualifyBusStart[i].stop_time)))
+            {
+                qualifyBusReturn.push_back(bus_schedule[j]);
+                break;
+            }
         }
     }
 }
@@ -258,12 +296,12 @@ int main()
     course.push_back(cs);
     Class cal2 = Class(13.0, 14.30, 2, "Math 226");
     course.push_back(cal2);
-    Class biolab = Class(15.0, 17.30, 4, "Bio Lab");
+    Class biolab = Class(15.50, 17.30, 4, "Bio Lab");
     course.push_back(biolab);
     Class chem = Class(15.0, 16.30, 6, "Chemistry");
     course.push_back(chem);
     Class number_system = Class(9.30, 11.10, 3, "Number System");
-    course.push_back(biolab);
+    course.push_back(number_system);
     Class cal3 = Class(14.0, 15.30, 7, "Math 323");
     course.push_back(cal3);
     Class film = Class(12.0, 14.0, 10, "Introduction to Film");
@@ -272,7 +310,14 @@ int main()
     course.push_back(geo);
     Class literature = Class(15.0, 17.30, 9, "Intro to literature");
     course.push_back(literature);
-
+    Class Math407 = Class(18.0, 19.30, 3, "Math 407");
+    course.push_back(Math407);
+    Class CS240 = Class(9.30, 11.0, 2, "Computer Science 240");
+    course.push_back(CS240);
+    Class writing = Class(14, 15.3, 4, "Writing 111");
+    course.push_back(writing);
+    Class Hist = Class(17.0, 18.0, 9, "History 103");
+    course.push_back(Hist);
     //---------------------------------------------------------
     vector<Bus> bus1; // Express
     bus1.push_back(Bus(15.15, 15.30, 15.40, 4));
@@ -302,20 +347,20 @@ int main()
     // total of 15 students now
     // CourseSchedule, break_time_start, break_time_end, bus_start, bus_return, credits
     // physics, cs , cal2, biolab, chem, number_system , cal3,film, geo, literature
-    students.push_back(Student({literature, cs, physics, cal2, geo}, "John", 12.0, 13.0, 15.0, 18.0, 15));
-    students.push_back(Student({chem, number_system, cal3, film}, "Kevin", 8.0, 12.0, 13.0, 15.0, 8));
-    students.push_back(Student({geo, biolab, cs, physics, literature}, "Tony", 13.3, 15.4, 18.0, 20.0, 12));
+    students.push_back(Student({literature, cs, physics, cal2, geo, Math407}, "John", 12.0, 12.30, 15.0, 15.50, 15));
+    students.push_back(Student({chem, number_system, cal3, film, Hist}, "Kevin", 8.0, 12.0, 13.0, 16.0, 8));
+    students.push_back(Student({geo, biolab, cs, physics, literature, Math407}, "Tony", 13.3, 15.4, 17.0, 19.0, 12));
     students.push_back(Student({number_system, physics, chem, biolab, geo}, "David", 17.0, 20.0, 13.0, 16.0, 20));
-    students.push_back(Student({geo, chem, number_system, cal3}, "James", 16.0, 18.0, 14.0, 16.0, 16));
-    students.push_back(Student({cal2, film, geo, literature}, "Noah", 12.0, 12.50, 13.0, 15.35, 18));
-    students.push_back(Student({number_system, physics, biolab, geo, cal3}, "Jack", 13.3, 15.0, 17.0, 18.5, 19));
+    students.push_back(Student({number_system, physics, biolab, geo, cal3, literature}, "Jack", 13.3, 14.5, 17.0, 19.3, 19));
     students.push_back(Student({cs, cal2, film, literature, physics}, "Jacob", 14.0, 15.5, 14.0, 16.0, 10));
-    students.push_back(Student({literature, cal3, number_system, chem}, "Henry", 12.0, 13.3, 18.0, 19.5, 22));
-    students.push_back(Student({biolab, chem, literature, geo}, "Sophia", 10.0, 12.5, 16.0, 17.4, 14));
-    students.push_back(Student({chem, number_system, cal3, biolab}, "Aria", 14.0, 16.0, 12.45, 13.30, 12));
-    students.push_back(Student({film, geo, literature, cal2, physics}, "Lily", 15.0, 16.3, 13.33, 15.22, 24));
-    students.push_back(Student({cs, geo, chem, cal3, literature}, "Charles", 15.0, 17.0, 15.3, 18.5, 28));
-    students.push_back(Student({film, number_system, physics, biolab, geo}, "Mike", 14.0, 16.5, 18.3, 20.0, 10));
+    students.push_back(Student({film, geo, literature, cal2, physics, number_system, Hist}, "Lily", 15.0, 16.3, 14.33, 16.22, 24));
+    students.push_back(Student({cs, geo, chem, cal3, literature, writing, Math407}, "Charles", 13.0, 15.0, 13.0, 17.0, 28));
+    students.push_back(Student({cal2, film, geo, literature, biolab}, "Noah", 12.0, 12.50, 13.0, 16.35, 18));
+    students.push_back(Student({literature, cal3, number_system, chem, Hist}, "Henry", 12.0, 13.3, 18.1, 20.0, 22));
+    //students.push_back(Student({biolab, chem, literature, geo}, "Sophia", 10.0, 12.5, 16.0, 17.4, 14));
+    //students.push_back(Student({film, number_system, physics, biolab, geo}, "Mike", 14.0, 16.5, 18.3, 20.0, 10));
+    //students.push_back(Student({chem, number_system, cal3, biolab}, "Aria", 14.0, 16.0, 14.45, 16.30, 12));
+    //students.push_back(Student({geo, chem, number_system, cal3}, "James", 16.0, 18.0, 14.0, 16.0, 16));
     //---------------------------------------------------------
     sort(students.begin(), students.end(), sortOnCredits);
     for (long unsigned int i = 0; i < students.size(); i++)
@@ -336,12 +381,21 @@ int main()
         schedule_bus_start(bus2, student, qualifyBus_start);
         schedule_bus_start(bus3, student, qualifyBus_start);
 
-        schedule_bus_return(bus1, student, qualifyBus_return);
-        schedule_bus_return(bus2, student, qualifyBus_return);
-        schedule_bus_return(bus3, student, qualifyBus_return);
+        sort(qualifyBus_start.begin(), qualifyBus_start.end(), sortOncost);
+        //cout << qualifyBus_start[1].cost << endl;
 
-        Bus optimalBusStart = optimal_bus_start(qualifyBus_start);
-        Bus optimalBusReturn = optimal_bus_return(qualifyBus_return, optimalBusStart);
+        schedule_bus_return(bus1, student, qualifyBus_return, qualifyBus_start);
+        schedule_bus_return(bus2, student, qualifyBus_return, qualifyBus_start);
+        schedule_bus_return(bus3, student, qualifyBus_return, qualifyBus_start);
+
+        sort(qualifyBus_return.begin(), qualifyBus_return.end(), sortOncost);
+
+        Bus optimalBusStart;
+        Bus optimalBusReturn;
+
+        optimal_bus(qualifyBus_start, qualifyBus_return, optimalBusStart, optimalBusReturn);
+        //Bus optimalBusStart = optimal_bus_start(qualifyBus_start);
+        //Bus optimalBusReturn = optimal_bus_return(qualifyBus_return, optimalBusStart);
 
         // cout << "Student: " << student.student_name << endl;
         // for (const auto &courses : student.CourseSchedule)
